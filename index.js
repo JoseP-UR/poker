@@ -26,14 +26,17 @@ io.on('connection', (socket) => {
 
     socket.on('auth', (user) => {
         let rooms = getRooms();
-        console.log(user);
         const {room, pwd} = user;
 
         if (!rooms[room]) {
-            console.log('creating room from auth');
             rooms[room] = newRoom(pwd);
             console.log(rooms);
             writeFileSync('./rooms.json', JSON.stringify(rooms));
+        }
+
+        if (rooms[room].pwd != pwd) {
+            socket.emit('auth-fail', {message: "Wrong password"});
+            return;
         }
 
         userExists = rooms[room].users.filter(u => {
@@ -45,33 +48,73 @@ io.on('connection', (socket) => {
             return;
         }
 
+        if (rooms[room].users.length > process.env.ROOM_MAX_USERS) {
+            socket.emit('auth-fail', {message: "Room is full"});
+            return;
+        }
+
         rooms[room].users.push({id: socket.id, name: user.name});
-        writeFileSync('./rooms.json', JSON.stringify(rooms));
+        userMap[socket.id] = room
         socket.join(room)
         socket.emit('auth-success', {
             message: 'user authenticated', 
             room: rooms[room],
             template: readFileSync('./views/templates/chatRoom.html', {encoding: 'utf-8'})
         });
-        io.to(room).emit('new-user', user.name);
+
+        let enteredMessage = { 
+            type: 'status',
+            message: `User ${user.name} has entered the room`
+        }
+
+        rooms[room].messages.push(enteredMessage)
+        writeFileSync('./rooms.json', JSON.stringify(rooms));
+        io.to(room).emit('chat-message', enteredMessage);
+        io.to(room).emit('user-new', rooms[room]);
 
 
         socket.on('chat-message', data => {
             const {room, pwd, user, message} = data;
+            let rooms = getRooms();
+            const chatMessage = {
+                type: 'user',
+                user,
+                message
+            }
+            rooms[room].messages.push(chatMessage)
+            writeFileSync('./rooms.json', JSON.stringify(rooms));
 
-            io.to(room).emit('chat-message', {user, message})
+            io.to(room).emit('chat-message', chatMessage)
         })
 
         socket.on('disconnect', () => {
-            console.log('user disconnected');
-            console.log(socket.id);
             let rooms = getRooms();
+            let room = userMap[socket.id] 
 
+            user = rooms[room].users.filter(u => {
+                return u.id == socket.id;
+            })[0];
+
+            rooms[room].users = rooms[room].users.filter(u => {
+                return u.id != socket.id;
+            })
+
+            let disconnectMessage = {
+                type: 'status',
+                message: `${user.name} has disconnected`
+            };
+
+            rooms[room].messages.push(disconnectMessage)
+
+            writeFileSync('./rooms.json', JSON.stringify(rooms));
+            io.to(room).emit('chat-message', disconnectMessage);
+            io.to(room).emit('user-disconnect', rooms[room]);
+            delete userMap[socket.id];
          });
     });
 
 });
 
-server.listen(3001, () => {
-    console.log('listening on http://localhost:3001');
+server.listen(process.env.APP_PORT, () => {
+    console.log(`listening on http://localhost:${process.env.APP_PORT}`);
 });
