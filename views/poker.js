@@ -45,7 +45,7 @@ function loginInit(data) {
 }
 
 function chatInit(data) {
-    userform.remove();
+    authContainer.remove();
     chatContainer.innerHTML = data.template
     chatContainer.style = "";
     messageBox = document.querySelector('.chat-container .-messages')
