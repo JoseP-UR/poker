@@ -1,43 +1,48 @@
 const socket = io();
 const urlSearchParams = new URLSearchParams(window.location.search);
 const urlQuery = Object.fromEntries(urlSearchParams.entries());
-const userform = document.getElementById('userform');
 const statusContainer = document.querySelector('.status-container');
 const chatContainer = document.querySelector('.chat-container');
+const authContainer = document.querySelector('.auth-container');
+
 chatContainer.style = "display: none";
+let userform = undefined;
 let messageBox = undefined;
 let chatForm = undefined;
 let username = undefined;
 let connectedUsers = [];
 
-let {room, pwd} = urlQuery;
+let { room, pwd } = urlQuery;
 
-socket.on('connect', function() {
-    console.log('connected');
+socket.on('connect', function () {
+    socket.on('socket-connected', data => {
+        loginInit(data);
+    });
 
     socket.on('auth-fail', (data) => {
         statusContainer.innerHTML = `<span class="-error">${data.message}</span>`
     });
 
     socket.on('auth-success', (data) => {
-        console.log(data);
         chatInit(data)
     })
 });
 
+function loginInit(data) {
+    authContainer.innerHTML = data.loginTemplate
+    userform = document.getElementById('userform');
 
-userform.onsubmit = (e) => {
-    e.preventDefault();
+    userform.onsubmit = (e) => {
+        e.preventDefault();
 
-    console.log(userform.username.value);
-    username = userform.username.value;
-    if (!username) {
-        return;
+        console.log(userform.username.value);
+        username = userform.username.value;
+        if (!username) {
+            return;
+        }
+        socket.emit('auth', { name: userform.username.value, room, pwd });
     }
-    console.log(location);
-    socket.emit('auth', {name: userform.username.value, room, pwd});
 }
-
 
 function chatInit(data) {
     userform.remove();
@@ -50,14 +55,14 @@ function chatInit(data) {
     data.room.messages.forEach(m => {
         handleMessage(m);
     });
-    
+
     chatForm.onsubmit = e => {
         e.preventDefault();
         let message = chatForm.message.value;
         if (!message) {
             return;
         }
-        socket.emit('chat-message', {room, pwd, user: username, message});
+        socket.emit('chat-message', { room, pwd, user: username, message });
         chatForm.message.value = '';
     }
 
@@ -85,12 +90,12 @@ function handleMessage(data) {
     switch (data.type) {
         case 'user':
             messageBox.innerHTML += `<div class="message-container"><span class="-icon">▶</span><span class="-user">${data.user}:</span><span class="-message">${data.message}</span></div>`;
-        break;
+            break;
         case 'status':
             messageBox.innerHTML += `<div class="message-container"><span class="-status">${data.message}</span></div>`;
-        break;
+            break;
         default:
             console.error('Wrong message type');
-        break;
+            break;
     }
 }
