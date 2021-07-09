@@ -4,7 +4,7 @@ const sendRoomMessage = require('./sendRoomMessage');
 
 module.exports = (socket, io) => {
     socket.on('chat-message', data => {
-        const {room, pwd, user, message} = data;
+        const { room, pwd, user, message } = data;
         let rooms = getRooms();
 
         const chatMessage = {

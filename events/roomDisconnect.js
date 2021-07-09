@@ -6,7 +6,7 @@ module.exports = (socket, io, userMap) => {
     socket.on('disconnect', () => {
         let rooms = getRooms();
         let room = userMap[socket.id]
-        
+
         console.log(`User disconnected ${socket.id} room: ${room}`);
 
         user = rooms[room].users.filter(u => {

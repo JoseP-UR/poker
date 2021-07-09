@@ -8,7 +8,7 @@ function getViewPath(filename) {
 }
 
 module.exports = app => {
-    app.get('/', async (req,res) => {
+    app.get('/', async (req, res) => {
         let { room, pwd } = req.query;
         let rooms = getRooms();
 
@@ -41,15 +41,15 @@ module.exports = app => {
         res.sendFile(getViewPath('index.html'));
     });
 
-    app.get('/poker.js', (req,res) => {
+    app.get('/poker.js', (req, res) => {
         res.sendFile(getViewPath('poker.js'));
     });
 
-    app.get('/style.css', (req,res) => {
+    app.get('/style.css', (req, res) => {
         res.sendFile(getViewPath('style.css'));
     });
 
-    app.get('/socket.io.min.js', (req,res) => {
+    app.get('/socket.io.min.js', (req, res) => {
         res.sendFile(getViewPath('socket.io.min.js'));
     });
 }
