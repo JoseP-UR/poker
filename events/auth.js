@@ -36,7 +36,7 @@ module.exports = (socket, io, userMap) => {
             return;
         }
 
-        rooms[room].users.push({ id: socket.id, name: user.name });
+        rooms[room].users.push({ id: socket.id, name: user.name, vote: '' });
         userMap[socket.id] = room
         socket.join(room)
 

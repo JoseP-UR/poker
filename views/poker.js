@@ -15,6 +15,11 @@ let connectedUsers = [];
 let { room, pwd } = urlQuery;
 
 socket.on('connect', function () {
+    statusContainer.innerHTML = `<span class="-success">Connected.</span>`;
+    setTimeout(() => {
+        statusContainer.innerHTML = ``;
+    }, 2000);
+
     socket.on('socket-connected', data => {
         loginInit(data);
     });
@@ -23,9 +28,13 @@ socket.on('connect', function () {
         statusContainer.innerHTML = `<span class="-error">${data.message}</span>`
     });
 
+    socket.on('disconnect', data => {
+        statusContainer.innerHTML = `<span class="-error">Socket is disconnected, retrying...</span>`
+    });
+
     socket.on('auth-success', (data) => {
         chatInit(data)
-    })
+    });
 });
 
 function loginInit(data) {
@@ -81,6 +90,7 @@ function chatInit(data) {
 
 function populateUsers(data) {
     userList.innerHTML = '';
+    connectedUsers = data.users;
     data.users.forEach(u => {
         userList.innerHTML += `<div id="${u.id}" class="user-container"><span class="-icon">👤</span><span class="-name">${u.name}</span></div>`
     });
