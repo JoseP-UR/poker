@@ -3,6 +3,8 @@ const getRooms = require('../utils/getRooms');
 const writeRooms = require('../utils/writeRooms');
 const path = require('path');
 
+const { MAX_ROOM_COUNT, ROOM_EXPIRATION_MINUTES } = process.env
+
 function getViewPath(filename) {
     return path.resolve(__dirname, `../views/${filename}`)
 }
@@ -18,8 +20,8 @@ module.exports = app => {
         console.log('cleaning rooms');
         let roomNames = Object.keys(rooms);
         roomNames.forEach(r => {
-            let expiryTime = 1000 * 60 * process.env.ROOM_EXPIRATION_MINUTES;
-            if ((rooms[r] && rooms[r].users) && rooms[r].users.length == 0 && (new Date().getTime() - rooms[r].created > expiryTime)) {
+            let expiryTime = 1000 * 60 * ROOM_EXPIRATION_MINUTES;
+            if (((rooms[r] && rooms[r].users) && rooms[r].users.length == 0 && (new Date().getTime() - rooms[r].created > expiryTime)) || ((rooms[r] && rooms[r].users) && rooms[r].users.length == 0 && rooms.length >= MAX_ROOM_COUNT)) {
                 console.log(`removing room ${r}`);
                 delete rooms[r];
             }
@@ -28,7 +30,7 @@ module.exports = app => {
 
         if (!rooms[room]) {
             console.log('creating room...');
-            const maxRooms = rooms.length < process.env.MAX_ROOM_COUNT
+            const maxRooms = rooms.length < MAX_ROOM_COUNT
 
             if (!maxRooms) {
                 console.log('creating room');

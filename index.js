@@ -8,7 +8,7 @@ require('dotenv').config();
 process.env.dir = __dirname;
 const express = require('express');
 const app = express();
-const { staticRoutes } = require('./routes');
+const { loadStaticRoutes } = require('./routes');
 
 const http = require('http');
 const server = http.createServer(app);
@@ -20,7 +20,7 @@ const loadTemplate = require('./utils/loadTemplate');
 
 let userMap = {};
 
-staticRoutes(app);
+loadStaticRoutes(app);
 
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);

@@ -1,3 +1,3 @@
 const static = require('./static');
 
-module.exports.staticRoutes = static;
+module.exports.loadStaticRoutes = static;

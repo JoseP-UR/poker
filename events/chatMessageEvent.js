@@ -1,6 +1,7 @@
 const getRooms = require('../utils/getRooms');
 const writeRooms = require('../utils/writeRooms');
 const sendRoomMessage = require('./sendRoomMessage');
+const sanitizeHtml = require('../utils/sanitizeHtml');
 
 module.exports = (socket, io) => {
     socket.on('chat-message', data => {
@@ -10,7 +11,7 @@ module.exports = (socket, io) => {
         const chatMessage = {
             type: 'user',
             user,
-            message
+            message: sanitizeHtml(JSON.stringify(message))
         }
 
         rooms[room].messages.push(chatMessage)
