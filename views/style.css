@@ -8,7 +8,7 @@
     justify-content: center;
 }
 
-.chat-container > .-messages {
+.chat-container > .messages {
     border: 1px dotted black;
     border-radius: 5px;
     padding: 5px 10px;
@@ -31,21 +31,21 @@
     height: 25px;
 }
 
-.message-container > .-user {
+.message-container > .user {
     font-weight: bold;
 }
 
-.message-container > .-message {
+.message-container > .message {
     padding: 0 5px;
 }
 
-.message-container .-icon {
+.message-container .icon {
     font-size: 10px;
     padding-right: 5px;
 }
 
 
-.chat-container > .-form {
+.chat-container > .form {
     flex-basis: 100%;
     display: flex;
     justify-content: center;
@@ -57,12 +57,12 @@
     height: 40px;
 }
 
-.chat-container > .-form > .-message {
+.chat-container > .form > .message {
     flex-basis: 75%;
     height: 35px;
 }
 
-.chat-container > .-form > .-submit {
+.chat-container > .form > .submit {
     flex-basis: 25%;
     margin-left: 10px;
     height: 35px;
