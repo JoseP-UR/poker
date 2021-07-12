@@ -17,6 +17,9 @@ const io = new Server(server);
 
 const loadEvents = require('./loadEvents');
 const loadTemplate = require('./utils/loadTemplate');
+const cleanUsers = require('./utils/cleanUsers');
+
+cleanUsers();
 
 let userMap = {};
 

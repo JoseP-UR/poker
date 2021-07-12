@@ -15,9 +15,10 @@ let connectedUsers = [];
 let { room, pwd } = urlQuery;
 
 socket.on('connect', function () {
-    statusContainer.innerHTML = `<span class="-success">Connected.</span>`;
+    statusContainer.innerHTML = `<span class="success">Connected.</span>`;
     setTimeout(() => {
         statusContainer.innerHTML = ``;
+        statusContainer.style = "display: none";
     }, 2000);
 
     socket.on('socket-connected', data => {
@@ -25,11 +26,14 @@ socket.on('connect', function () {
     });
 
     socket.on('auth-fail', (data) => {
-        statusContainer.innerHTML = `<span class="-error">${data.message}</span>`
+        statusContainer.style = "";
+        statusContainer.innerHTML = `<span class="error">${data.message}</span>`
     });
 
-    socket.on('disconnect', data => {
-        statusContainer.innerHTML = `<span class="-error">Socket is disconnected, retrying...</span>`
+    socket.on('disconnect', () => {
+        window.location.reload();
+        statusContainer.style = "";
+        statusContainer.innerHTML = `<span class="error">Socket is disconnected, retrying...</span>`
     });
 
     socket.on('auth-success', (data) => {
@@ -57,9 +61,9 @@ function chatInit(data) {
     authContainer.remove();
     chatContainer.innerHTML = data.template
     chatContainer.style = "";
-    messageBox = document.querySelector('.chat-container .-messages')
-    userList = document.querySelector('.participant-container > .-participants')
-    chatForm = document.querySelector('.chat-container .-form')
+    messageBox = document.querySelector('.chat-container .messages')
+    userList = document.querySelector('.participant-container > .participants')
+    chatForm = document.querySelector('.chat-container .form')
 
     data.room.messages.forEach(m => {
         handleMessage(m);
@@ -92,17 +96,17 @@ function populateUsers(data) {
     userList.innerHTML = '';
     connectedUsers = data.users;
     data.users.forEach(u => {
-        userList.innerHTML += `<div id="${u.id}" class="user-container"><span class="-icon">👤</span><span class="-name">${u.name}</span></div>`
+        userList.innerHTML += `<div id="${u.id}" class="user-container"><span class="icon">👤</span><span class="name">${u.name}</span></div>`
     });
 }
 
 function handleMessage(data) {
     switch (data.type) {
         case 'user':
-            messageBox.innerHTML += `<div class="message-container"><span class="-icon">▶</span><span class="-user">${data.user}:</span><span class="-message">${data.message}</span></div>`;
+            messageBox.innerHTML += `<div class="message-container"><span class="icon">▶</span><span class="user">${data.user}:</span><span class="message">${data.message}</span></div>`;
             break;
         case 'status':
-            messageBox.innerHTML += `<div class="message-container"><span class="-status">${data.message}</span></div>`;
+            messageBox.innerHTML += `<div class="message-container"><span class="status">${data.message}</span></div>`;
             break;
         default:
             console.error('Wrong message type');
