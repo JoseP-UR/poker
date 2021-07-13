@@ -16,7 +16,6 @@
     min-height: 225px;
     overflow: auto;
     background: #dee2ff;
-    flex-basis: 70%;
 }
 
 .chat-container > .participant-container {
@@ -41,8 +40,9 @@
     padding: 0 5px;
 }
 
-.message-container > .message * {
+.message-container * {
     display: inline-block;
+    white-space: nowrap;
 }
 
 .message-container .icon {

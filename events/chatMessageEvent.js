@@ -11,7 +11,7 @@ module.exports = (socket, io) => {
         const chatMessage = {
             type: 'user',
             user,
-            message: sanitizeHtml(JSON.stringify(message))
+            message: sanitizeHtml(message)
         }
 
         rooms[room].messages.push(chatMessage)

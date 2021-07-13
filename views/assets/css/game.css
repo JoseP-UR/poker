@@ -2,6 +2,7 @@
     grid-area: game;
     display: grid;
     grid-template-rows: 1fr 0.5fr;
+    padding-bottom: 10px
 }
 
 .game-container > .cards {
