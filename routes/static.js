@@ -43,17 +43,18 @@ module.exports = app => {
         res.sendFile(getViewPath('index.html'));
     });
 
-    app.get('/poker.js', (req, res) => {
-        res.sendFile(getViewPath('poker.js'));
+    app.get('/js/:js', (req, res) => {
+        const {js} = req.params;
+
+        res.sendFile(getViewPath(`assets/js/${js}`));
     });
 
-    app.get('/style.css', (req, res) => {
-        res.sendFile(getViewPath('style.css'));
+    app.get('/styles/:style', (req, res) => {
+        const {style} = req.params;
+
+        res.sendFile(getViewPath(`assets/css/${style}`));
     });
 
-    app.get('/socket.io.min.js', (req, res) => {
-        res.sendFile(getViewPath('socket.io.min.js'));
-    });
 
     app.get('/cards/:card', (req, res)=> {
         const {card} = req.params;

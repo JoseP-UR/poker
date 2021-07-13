@@ -1,0 +1,36 @@
+.auth-container {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    background: #dddee8;
+    padding: 30px 0;
+    border-radius: 10px;
+    box-shadow: 4px 5px 5px 0px #969acc;
+}
+
+.auth-container > .title {
+    margin: 0;
+    margin-bottom: 15px;
+    font-size: 30px;
+}
+
+.auth-container > form > input[type="text"] {
+    border-radius: 5px;
+    border: none;
+    width: 40%;
+    height: 40px;
+    padding-left: 10px;
+    font-size: 20px;
+    box-shadow: 1px 2px 7px 0px #9c9ca7;
+}
+
+.auth-container > form > input[type="submit"] {
+    border-radius: 5px;
+    border: none;
+    width: 15%;
+    height: 40px;
+    font-size: 20px;
+    box-shadow: 1px 2px 7px 0px #9c9ca7;
+    min-width: 80px;
+    text-align: center;
+}

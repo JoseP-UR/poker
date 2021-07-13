@@ -1,0 +1,17 @@
+body {
+    font-family: cursive;
+    font-weight: bold;
+    display: grid;
+    grid-template-rows: 1.5fr 1fr;
+    grid-template-areas:
+        "game"
+        "chat";
+}
+
+.status-container {
+    display: block;
+    position: absolute;
+    padding: 5px;
+    border-radius: 5px;
+    background: #badfff;
+}
