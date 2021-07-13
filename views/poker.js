@@ -3,10 +3,27 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const urlQuery = Object.fromEntries(urlSearchParams.entries());
 const statusContainer = document.querySelector('.status-container');
 const chatContainer = document.querySelector('.chat-container');
+const gameContainer = document.querySelector('.game-container');
 const authContainer = document.querySelector('.auth-container');
+
+const cardList = (() => {
+    const cardVotes = ['1', '2', '3', '5', '8', '13', '21', '34', '55', '89', 'doubt'];
+    const cardIcons = ['♠️', '♥️', '♣️', '♦️'];
+    let list = {};
+
+    cardVotes.forEach(vote => {
+        list[vote] = {
+            picture: `/cards/${vote}.png`,
+            icon: cardIcons[Math.floor(Math.random() * 4)]
+        }
+    })
+
+    return list;
+})();
 
 chatContainer.style = "display: none";
 let userform = undefined;
+let gameUsers = undefined;
 let messageBox = undefined;
 let chatForm = undefined;
 let username = undefined;
@@ -37,7 +54,8 @@ socket.on('connect', function () {
     });
 
     socket.on('auth-success', (data) => {
-        chatInit(data)
+        initChat(data)
+        initGame(data)
     });
 });
 
@@ -57,9 +75,34 @@ function loginInit(data) {
     }
 }
 
-function chatInit(data) {
+function initGame(data) {
+    gameContainer.innerHTML = data.gameTemplate;
+
+    gameUsers = document.querySelector('.game-container > .game > .participants');
+    gameCards = document.querySelector('.game-container > .cards');
+
+    const cards = Object.keys(cardList);
+
+    cards.forEach(c => {
+        const card = cardList[c];
+        const cardNumber = c == 'doubt' ? '?' : c;
+        gameCards.innerHTML += `<div class="card" id="${c}" onclick="sendVote('${c}')">
+                                    <div class="number">
+                                        <span>${cardNumber}</span>
+                                        <span>${card.icon}</span>
+                                    </div>
+                                    <img  class="picture" src="${card.picture}">
+                                    <div class="number">
+                                        <span>${card.icon}</span>
+                                        <span>${cardNumber}</span>
+                                    </div>
+                                </div>`
+    });
+}
+
+function initChat(data) {
     authContainer.remove();
-    chatContainer.innerHTML = data.template
+    chatContainer.innerHTML = data.chatTemplate;
     chatContainer.style = "";
     messageBox = document.querySelector('.chat-container .messages')
     userList = document.querySelector('.participant-container > .participants')
@@ -89,6 +132,7 @@ function chatInit(data) {
     socket.on('user-disconnect', data => {
         populateUsers(data);
     })
+
 }
 
 
@@ -96,7 +140,17 @@ function populateUsers(data) {
     userList.innerHTML = '';
     connectedUsers = data.users;
     data.users.forEach(u => {
-        userList.innerHTML += `<div id="${u.id}" class="user-container"><span class="icon">👤</span><span class="name">${u.name}</span></div>`
+        if (userList) {
+            userList.innerHTML += `<div id="${u.id}" class="user-container"><span class="icon">${u.leader  ? '👑' : '👤'}</span><span class="name">${u.name}</span></div>`
+        }
+
+        if(gameUsers) {
+            gameUsers.innerHTML += `<div class="user">
+                                        <div class="icon">${u.leader  ? '👑' : '👤'}</div>
+                                        <div class="name">${u.name}</div>
+                                        <div class="vote">${u.vote}</div>
+                                    </div>`
+        }
     });
 }
 
@@ -112,4 +166,8 @@ function handleMessage(data) {
             console.error('Wrong message type');
             break;
     }
+}
+
+function sendVote(e) {
+    console.log(e);
 }

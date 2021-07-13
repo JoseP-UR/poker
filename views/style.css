@@ -1,6 +1,11 @@
 body {
     font-family: cursive;
     font-weight: bold;
+    display: grid;
+    grid-template-rows: 1.5fr 1fr;
+    grid-template-areas:
+        "game"
+        "chat";
 }
 
 .status-container {
@@ -49,13 +54,13 @@ body {
 }
 
 .chat-container {
+    grid-area: chat;
     border: 1px solid black;
     padding: 10px;
     border-radius: 5px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    grid-template-areas: "chat participants" "form  participants";
 }
 
 .chat-container > .messages {
@@ -69,7 +74,9 @@ body {
     flex-basis: 70%;
 }
 
-.participant-container {
+.chat-container > .participant-container {
+    grid-area: participants;
+    display: block;
     flex-basis: 20%;
     padding: 10px;
     border: 1px solid black;
@@ -96,8 +103,10 @@ body {
 
 
 .chat-container > .form {
+    grid-area: form;
     flex-basis: 100%;
     display: flex;
+    align-self: center;
     justify-content: center;
     align-items: center;
     align-content: center;
@@ -117,3 +126,49 @@ body {
     margin-left: 10px;
     height: 35px;
 }
+
+.game-container {
+    grid-area: game;
+    display: grid;
+    grid-template-rows: 1fr 0.5fr;
+}
+
+.game-container > .cards {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    height: auto;
+    align-self: center;
+}
+
+.game-container > .cards > .card {
+    display: grid;
+    grid-template-rows: 0.5fr 2fr 0.5fr;
+    height: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    min-width: 65px
+}
+
+.game-container > .cards > .card:hover {
+    transform: scale(1.1, 1.1);
+    cursor: pointer;
+}
+
+.game-container > .cards > .card > .picture {
+    max-width: 60px;
+    max-height: 60px;
+    align-self: center;
+    margin: auto;
+}
+
+.game-container > .cards > .card > .number {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+}
+
+

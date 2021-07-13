@@ -54,4 +54,9 @@ module.exports = app => {
     app.get('/socket.io.min.js', (req, res) => {
         res.sendFile(getViewPath('socket.io.min.js'));
     });
+
+    app.get('/cards/:card', (req, res)=> {
+        const {card} = req.params;
+        res.sendFile(getViewPath(`assets/img/cards/${card}`));
+    });
 }

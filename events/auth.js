@@ -43,7 +43,8 @@ module.exports = (socket, io, userMap) => {
         socket.emit('auth-success', {
             message: 'user authenticated',
             room: rooms[room],
-            template: loadTemplate('chatRoom')
+            chatTemplate: loadTemplate('chatRoom'),
+            gameTemplate: loadTemplate('pokerRoom')
         });
 
         let enteredMessage = {
