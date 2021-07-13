@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +14,5 @@
     "express": "^4.17.1",
     "sanitize-html": "^2.4.0",
     "socket.io": "^4.1.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.9"
   }
 }

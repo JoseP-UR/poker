@@ -41,6 +41,10 @@
     padding: 0 5px;
 }
 
+.message-container > .message * {
+    display: inline-block;
+}
+
 .message-container .icon {
     font-size: 10px;
     padding-right: 5px;
