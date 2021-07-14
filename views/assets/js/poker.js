@@ -101,6 +101,7 @@ function initGame(data) {
     });
 
     socket.on('result-reveal', data => {
+        gameResults.innerHTML = '';
         populateUsers(data);
         countResults(data);
     })
@@ -112,6 +113,7 @@ function initGame(data) {
 }
 
 function countResults(data) {
+    gameResults.innerHTML = '';
     let count = {
         nv: 0
     }
@@ -128,6 +130,9 @@ function countResults(data) {
     });
 
     gameResults.innerHTML += `<h3>Results:</h3>`
+    if (count.nv == 0) {
+        delete count.nv;
+    }
     Object.keys(count).forEach(c => {
         let voteName = c;
 
@@ -136,7 +141,7 @@ function countResults(data) {
         }
 
         if (c == 'nv' || !c) {
-            voteName = 'No vote'
+            return;
         }
 
         let picLink = '';
