@@ -24,6 +24,7 @@ const cardList = (() => {
 chatContainer.style = "display: none";
 let userform = undefined;
 let gameUsers = undefined;
+let gameResults = undefined;
 let messageBox = undefined;
 let chatForm = undefined;
 let username = undefined;
@@ -82,9 +83,14 @@ function initGame(data) {
     gameContainer.innerHTML = data.gameTemplate;
 
     gameUsers = document.querySelector('.game-container > .game > .participants');
+    gameResults = document.querySelector('.game-container > .game > .results');
     gameCards = document.querySelector('.game-container > .cards');
 
     populateCards();
+
+    if(data.room.revealed) {
+        countResults(data.room);
+    }
 
     socket.on('leader-change', data => {
         populateUsers(data)
@@ -96,10 +102,61 @@ function initGame(data) {
 
     socket.on('result-reveal', data => {
         populateUsers(data);
+        countResults(data);
     })
 
     socket.on('result-reset', data => {
+        gameResults.innerHTML = '';
         populateUsers(data);
+    })
+}
+
+function countResults(data) {
+    let count = {
+        nv: 0
+    }
+
+    data.users.forEach(({ vote }) => {
+        if (!count[vote]) {
+            count[vote] = 0;
+        }
+        if (!vote) {
+            count['nv'] += 1;
+            return;
+        }
+        count[vote] += 1;
+    });
+
+    gameResults.innerHTML += `<h3>Results:</h3>`
+    Object.keys(count).forEach(c => {
+        let voteName = c;
+
+        if (c ==  'doubt') {
+            voteName = '?'
+        }
+
+        if (c == 'nv' || !c) {
+            voteName = 'No vote'
+        }
+
+        let picLink = '';
+        
+        picLink = cardList[c] ? cardList[c].picture : '';
+        
+        let imgString = '';
+
+        for (let i = 0; i < count[c]; i++) {
+            imgString += `<img src="${picLink ? picLink : '/cards/nv.png'}" />`
+        }
+        console.log(imgString);
+
+        gameResults.innerHTML += `<div class="result">
+                                    <div>
+                                    <span>${voteName}: </span>
+                                    <span>${count[c]}</span>
+                                    </div>
+                                    ${imgString}
+                                    </div>`
     })
 }
 
@@ -188,10 +245,16 @@ function populateUsers(data) {
         }
 
         if (gameUsers) {
+            const reveal = u.vote && data.revealed;
+            let card = undefined;
+            if (reveal) {
+                card = cardList[u.vote]
+            }
+            const vote = u.vote == 'doubt' ? '?' : u.vote;
             gameUsers.innerHTML += `<div class="user user-${u.id}">
                                         <div class="icon">${u.leader ? '👑' : '👤'}</div>
                                         <div class="name">${u.name}</div>
-                                        <div class="vote">${u.vote && data.revealed ? u.vote : u.voted ? '❔' : ''}</div>
+                                        <div class="vote">${reveal ? `<div class="uncovered"><p>${vote}</p><img src="${card.picture}"/></div>` : u.voted ? `<div class="covered"><span>❓</span></div>` : ''}</div>
                                     </div>`
         }
     });

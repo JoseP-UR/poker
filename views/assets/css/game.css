@@ -1,7 +1,7 @@
 .game-container {
     grid-area: game;
     display: grid;
-    grid-template-rows: 0.1fr 1fr 0.5fr;
+    grid-template-rows: 0.1fr 1.5fr 0.5fr;
     padding-bottom: 10px
 }
 
@@ -15,13 +15,83 @@
 
 .game-container > .game > .participants > .user {
     flex-basis: auto;
-    min-width: 100px;
+    min-width: 140px;
     text-align: center;
-    min-height: 100px;
+    min-height: 150px;
+    height: 180px;
+    background: #82f9ff;
     border: 1px solid black;
     border-radius: 5px;
     padding: 5px;
     margin: 2px;
+}
+
+.game-container > .game > .participants > .user > .vote > div {
+    border: 1px solid black;
+    height: 130px
+}
+
+.game-container > .game > .participants > .user > .vote > .uncovered {
+    background: #dfe7ef;  
+}
+
+.game-container > .game > .participants > .user > .vote > .uncovered > p {
+    width: 25px;
+    height: 25px;
+    background-color: aliceblue;
+    border-radius: 50%;
+    margin: 15px auto;
+}
+.game-container > .game > .participants > .user > .vote > .uncovered > img {
+    max-width: 100px;
+    max-height: 70px;
+}
+
+.game-container > .game > .participants > .user > .vote > .covered {
+    background: #2b4865;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center; 
+}
+
+.game-container > .game > .participants > .user > .vote > .covered > span {
+    background: #d8defd;
+    padding: 5px;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    box-shadow: 0px 0px 4px 0px #d8defd;
+}
+
+.game-container > .game > .results {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    height: 100px;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.game-container > .game > .results > .result {
+    margin: 2px;
+    /* border: 1px solid; */
+    padding: 2px 5px 2px 0;
+}
+
+.game-container > .game > .results > .result > div {
+    display: inline-block;
+    text-align: end;
+    min-width: 110px;
+}
+
+
+.game-container > .game > .results > .result > img {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
 }
 
 .game-container > .cards {
