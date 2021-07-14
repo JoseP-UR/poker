@@ -1,8 +1,27 @@
 .game-container {
     grid-area: game;
     display: grid;
-    grid-template-rows: 1fr 0.5fr;
+    grid-template-rows: 0.1fr 1fr 0.5fr;
     padding-bottom: 10px
+}
+
+.game-container > .game > .participants {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.game-container > .game > .participants > .user {
+    flex-basis: auto;
+    min-width: 100px;
+    text-align: center;
+    min-height: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px;
 }
 
 .game-container > .cards {

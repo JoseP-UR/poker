@@ -92,6 +92,14 @@ function initGame(data) {
 
     socket.on('user-vote', data => {
         populateUsers(data);
+    });
+
+    socket.on('result-reveal', data => {
+        populateUsers(data);
+    })
+
+    socket.on('result-reset', data => {
+        populateUsers(data);
     })
 }
 
@@ -135,6 +143,14 @@ function sendVote(e) {
         ...currentUser,
         vote: e
     });
+}
+
+function revealVotes() {
+    socket.emit('result-reveal', currentUser);
+}
+
+function resetVotes() {
+    socket.emit('result-reset', currentUser);
 }
 
 function populateCards() {
