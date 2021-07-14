@@ -1,10 +1,5 @@
-const { readFileSync, writeFileSync } = require('fs');
-if (!process.env.APP_PORT) {
-    const env = readFileSync('./.env.example');
-    writeFileSync('./.env', env)
-}
-
 require('dotenv').config();
+
 process.env.dir = __dirname;
 const express = require('express');
 const app = express();
