@@ -17,6 +17,15 @@ module.exports = (socket, io, userMap) => {
             return u.id != socket.id;
         })
 
+        if (user.leader && rooms[room].users.length > 0) {
+            rooms[room].users[0].leader = true;
+            io.to(room).emit('leader-change', rooms[room]);
+            sendRoomMessage(io, room, {
+                type: 'status',
+                message: `User ${rooms[room].users[0].name} is the leader now`
+            })
+        }
+
         let disconnectMessage = {
             type: 'status',
             message: `${user.name} has disconnected`

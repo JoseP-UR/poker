@@ -27,33 +27,36 @@ let gameUsers = undefined;
 let messageBox = undefined;
 let chatForm = undefined;
 let username = undefined;
-let connectedUsers = [];
+let currentUser = undefined;
 
 let { room, pwd } = urlQuery;
 
-socket.on('connect', function () {
-    statusContainer.innerHTML = `<span class="success">Connected.</span>`;
+function alert(message) {
+    statusContainer.innerHTML = message;
+    statusContainer.style = "";
     setTimeout(() => {
         statusContainer.innerHTML = ``;
         statusContainer.style = "display: none";
     }, 2000);
+}
+
+socket.on('connect', function () {
+    alert(`<span class="success">Connected.</span>`);
 
     socket.on('socket-connected', data => {
         loginInit(data);
     });
 
     socket.on('auth-fail', (data) => {
-        statusContainer.style = "";
-        statusContainer.innerHTML = `<span class="error">${data.message}</span>`
+        alert(`<span class="error">${data.message}</span>`);
     });
 
     socket.on('disconnect', () => {
         window.location.reload();
-        statusContainer.style = "";
-        statusContainer.innerHTML = `<span class="error">Socket is disconnected, retrying...</span>`
     });
 
     socket.on('auth-success', (data) => {
+        currentUser = data.user;
         initChat(data)
         initGame(data)
     });
@@ -81,23 +84,15 @@ function initGame(data) {
     gameUsers = document.querySelector('.game-container > .game > .participants');
     gameCards = document.querySelector('.game-container > .cards');
 
-    const cards = Object.keys(cardList);
+    populateCards();
 
-    cards.forEach(c => {
-        const card = cardList[c];
-        const cardNumber = c == 'doubt' ? '?' : c;
-        gameCards.innerHTML += `<div class="card" id="${c}" onclick="sendVote('${c}')">
-                                    <div class="number">
-                                        <span>${cardNumber}</span>
-                                        <span>${card.icon}</span>
-                                    </div>
-                                    <img  class="picture" src="${card.picture}">
-                                    <div class="number">
-                                        <span>${card.icon}</span>
-                                        <span>${cardNumber}</span>
-                                    </div>
-                                </div>`
-    });
+    socket.on('leader-change', data => {
+        populateUsers(data)
+    })
+
+    socket.on('user-vote', data => {
+        populateUsers(data);
+    })
 }
 
 function initChat(data) {
@@ -135,20 +130,52 @@ function initChat(data) {
 
 }
 
+function sendVote(e) {
+    socket.emit('user-vote', {
+        ...currentUser,
+        vote: e
+    });
+}
+
+function populateCards() {
+    const cards = Object.keys(cardList);
+
+    cards.forEach(c => {
+        const card = cardList[c];
+        const cardNumber = c == 'doubt' ? '?' : c;
+        gameCards.innerHTML += `<div class="card" id="${c}" onclick="sendVote('${c}')">
+                                    <div class="number">
+                                        <span>${cardNumber}</span>
+                                        <span>${card.icon}</span>
+                                    </div>
+                                    <img  class="picture" src="${card.picture}">
+                                    <div class="number">
+                                        <span>${card.icon}</span>
+                                        <span>${cardNumber}</span>
+                                    </div>
+                                </div>`
+    });
+}
 
 function populateUsers(data) {
-    userList.innerHTML = '';
-    connectedUsers = data.users;
+    if (userList) {
+        userList.innerHTML = '';
+    }
+
+    if (gameUsers) {
+        gameUsers.innerHTML = '';
+    }
+
     data.users.forEach(u => {
         if (userList) {
-            userList.innerHTML += `<div id="${u.id}" class="user-container"><span class="icon">${u.leader  ? '👑' : '👤'}</span><span class="name">${u.name}</span></div>`
+            userList.innerHTML += `<div class="user-container"><span class="icon">${u.leader ? '👑' : '👤'}</span><span class="name">${u.name}</span></div>`
         }
 
-        if(gameUsers) {
-            gameUsers.innerHTML += `<div class="user">
-                                        <div class="icon">${u.leader  ? '👑' : '👤'}</div>
+        if (gameUsers) {
+            gameUsers.innerHTML += `<div class="user user-${u.id}">
+                                        <div class="icon">${u.leader ? '👑' : '👤'}</div>
                                         <div class="name">${u.name}</div>
-                                        <div class="vote">${u.vote}</div>
+                                        <div class="vote">${u.vote && data.revealed ? u.vote : u.voted ? '❔' : ''}</div>
                                     </div>`
         }
     });
@@ -166,8 +193,4 @@ function handleMessage(data) {
             console.error('Wrong message type');
             break;
     }
-}
-
-function sendVote(e) {
-    console.log(e);
 }

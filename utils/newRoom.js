@@ -3,6 +3,7 @@ module.exports = (pwd) => {
         users: [],
         pwd,
         created: new Date().getTime(),
-        messages: []
+        messages: [],
+        revealed: false
     }
 }

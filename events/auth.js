@@ -31,16 +31,20 @@ module.exports = (socket, io, userMap) => {
             return;
         }
 
-        if (rooms[room].users.length > process.env.ROOM_MAX_USERS) {
+        const usersLength = rooms[room].users.length;
+
+        if (usersLength > process.env.ROOM_MAX_USERS) {
             socket.emit('auth-fail', { message: `Room is full (max ${process.env.ROOM_MAX_USERS} users allowed)` });
             return;
         }
 
-        rooms[room].users.push({ id: socket.id, name: user.name, vote: '' });
+        const userToAdd = { id: socket.id, name: user.name, vote: '', voted: false, leader: usersLength == 0 };
+        rooms[room].users.push(userToAdd);
         userMap[socket.id] = room
         socket.join(room)
 
         socket.emit('auth-success', {
+            user: userToAdd,
             message: 'user authenticated',
             room: rooms[room],
             chatTemplate: loadTemplate('chatRoom'),
@@ -60,5 +64,31 @@ module.exports = (socket, io, userMap) => {
         chatMessageEvent(socket, io)
 
         roomDisconnect(socket, io, userMap)
+
+        socket.on('user-vote', data => {
+            console.log(data);
+            let rooms = getRooms();
+
+            let room = userMap[data.id];
+
+            rooms[room].users =rooms[room].users.map(u => {
+                if (u.id != data.id) {
+                    return u
+                }
+
+                return {...u, vote: data.vote, voted: true}
+            })
+
+            let result = {...rooms[room]};
+
+            if (!result.revealed) {
+                result.users = result.users.map(u => {
+                    return {...u, vote: ''}
+                });
+            }
+
+            writeRooms(rooms);
+            io.to(room).emit('user-vote', result);
+        })
     });
 }
