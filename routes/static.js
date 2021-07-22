@@ -37,6 +37,7 @@ module.exports = app => {
                 rooms[room] = newRoom(pwd);
                 writeRooms(rooms);
                 res.redirect(`/?room=${room}&pwd=${pwd}`)
+                return;
             }
         }
 
