@@ -1,6 +1,7 @@
 const newRoom = require('../utils/newRoom');
 const getRooms = require('../utils/getRooms');
 const writeRooms = require('../utils/writeRooms');
+const log = require('../utils/log');
 const path = require('path');
 
 const { MAX_ROOM_COUNT, ROOM_EXPIRATION_MINUTES } = process.env
@@ -17,23 +18,23 @@ module.exports = app => {
         room = room ? room : Math.floor(Math.random() * 999);
         pwd = pwd ? pwd : `${Math.floor(Math.random() * 9)}${Math.floor(Math.random() * 9)}${Math.floor(Math.random() * 9)}`
 
-        console.log('cleaning rooms');
+        log('cleaning rooms');
         let roomNames = Object.keys(rooms);
         roomNames.forEach(r => {
             let expiryTime = 1000 * 60 * ROOM_EXPIRATION_MINUTES;
             if (((rooms[r] && rooms[r].users) && rooms[r].users.length == 0 && (new Date().getTime() - rooms[r].created > expiryTime)) || ((rooms[r] && rooms[r].users) && rooms[r].users.length == 0 && rooms.length >= MAX_ROOM_COUNT)) {
-                console.log(`removing room ${r}`);
+                log(`removing room ${r}`);
                 delete rooms[r];
             }
         });
         writeRooms(rooms);
 
         if (!rooms[room]) {
-            console.log('creating room...');
+            log('creating room...');
             const maxRooms = rooms.length < MAX_ROOM_COUNT
 
             if (!maxRooms) {
-                console.log('creating room');
+                log('creating room');
                 rooms[room] = newRoom(pwd);
                 writeRooms(rooms);
                 res.redirect(`/?room=${room}&pwd=${pwd}`)

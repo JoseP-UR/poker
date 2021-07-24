@@ -72,7 +72,6 @@ function countResults(data) {
         for (let i = 0; i < count[c]; i++) {
             imgString += `<img src="${picLink ? picLink : '/cards/nv.png'}" />`
         }
-        console.log(imgString);
 
         gameResults.innerHTML += `<div class="result">
                                     <div>

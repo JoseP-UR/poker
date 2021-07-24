@@ -1,1 +1,1 @@
-{"117":{"users":[],"pwd":"665","created":1626923223335,"messages":[{"type":"status","message":"User test has entered the room"},{"type":"status","message":"test has disconnected"}],"revealed":false}}
+{"990":{"users":[{"id":"3Qbg-ZGcRMy3FitPAAAC","name":"test","vote":"","voted":false,"leader":true}],"pwd":"050","created":1627097138590,"messages":[{"type":"status","message":"User test has entered the room"}],"revealed":false}}

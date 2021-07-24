@@ -6,7 +6,6 @@ function loginInit(data) {
     userform.onsubmit = (e) => {
         e.preventDefault();
 
-        console.log(userform.username.value);
         username = userform.username.value;
         if (!username) {
             return;
