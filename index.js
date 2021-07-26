@@ -15,10 +15,6 @@ const loadTemplate = require('./utils/loadTemplate');
 const cleanUsers = require('./utils/cleanUsers');
 const log = require('./utils/log');
 
-process.addListener('uncaughtException', (event) => {
-    log(event.error, 'error');
-});
-
 cleanUsers();
 
 let userMap = {};
