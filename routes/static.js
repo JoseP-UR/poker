@@ -60,6 +60,7 @@ module.exports = app => {
 
     app.get('/cards/:card', (req, res)=> {
         const {card} = req.params;
-        res.sendFile(getViewPath(`assets/img/cards/${card}`));
+        const cardArr = card.split('.');
+        res.sendFile(getViewPath(`assets/img/cards/compressed/${cardArr[0]}-min.${cardArr[1]}`));
     });
 }

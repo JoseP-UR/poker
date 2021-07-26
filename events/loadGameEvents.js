@@ -8,7 +8,7 @@ module.exports = (socket, io, userMap) => {
         let room = userMap[socket.id];
 
         if (rooms[room].revealed) {
-            socket.emit('auth-fail', { message: `Votes already releaved` });
+            socket.emit('auth-fail', { message: `Votes already revealed` });
             return;
         }
 

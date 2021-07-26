@@ -1,9 +1,30 @@
 module.exports = (message, type = "log") => {
-    //get current date dd-mm-yyyy hh:mm:ss
-    var date = new Date();
-    var dateFormat = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-    if (type == 'error'){
-        console.error(dateFormat + ' - ' + message);
+    const date = new Date();
+    const dd = date.getDate() <  10 ? "0" + date.getDate() : date.getDate();
+    const mm = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+    const yyyy = date.getFullYear();
+    const hh = date.getHours();
+    const ii = date.getMinutes();
+    const ss = date.getSeconds();
+    let dd_mm_yyyy_hh_ii_ss = `${dd}/${mm}/${yyyy} ${hh}:${ii}:${ss}`;
+
+    let result  = '';
+    switch (type) {
+        case "log":
+            result = `[${dd_mm_yyyy_hh_ii_ss}] [log] ${message}`;
+            break;
+        case "warn":
+            result = `[${dd_mm_yyyy_hh_ii_ss}] [warn] ${message}`;
+            break;
+        case "error":
+            result = `[${dd_mm_yyyy_hh_ii_ss}] [error] ${message}`;
+            break;
+        default:
+            result = `[${dd_mm_yyyy_hh_ii_ss}] [log] ${message}`;
+            type = "log"
+            break;
     }
-    console.log(`${dateFormat} - ${message}`)
+
+    console[type](result);
+    return;
 };
