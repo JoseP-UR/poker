@@ -5,7 +5,7 @@ module.exports = (message, type = "log") => {
     const yyyy = date.getFullYear();
     const hh = date.getHours();
     const ii = date.getMinutes();
-    const ss = date.getSeconds();
+    const ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
     let dd_mm_yyyy_hh_ii_ss = `${dd}/${mm}/${yyyy} ${hh}:${ii}:${ss}`;
 
     let result  = '';
