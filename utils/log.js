@@ -20,7 +20,7 @@ module.exports = (message, type = "log") => {
             result = `[${dd_mm_yyyy_hh_ii_ss}] [error] ${message}`;
             break;
         default:
-            result = `[${dd_mm_yyyy_hh_ii_ss}] [log] ${message}`;
+            result = `[${dd_mm_yyyy_hh_ii_ss}] [${type}] ${message}`;
             type = "log"
             break;
     }
