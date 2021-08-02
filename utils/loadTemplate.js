@@ -1,4 +1,4 @@
-const { readFileSync, read } = require('fs');
+const { readFileSync } = require('fs');
 const { resolve } = require('path');
 
 module.exports = (template) => {

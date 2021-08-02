@@ -1,4 +1,3 @@
-const { writeFileSync, readFileSync } = require('fs');
 const getRooms = require('./getRooms')
 const writeRooms = require('./writeRooms')
 
