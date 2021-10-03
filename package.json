@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch --runInBand",
+    "test:watch:cov": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch --runInBand --coverage",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules npx jest --no-cache --runInBand --coverage"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +19,8 @@
     "express": "^4.17.1",
     "sanitize-html": "^2.4.0",
     "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "jest": "^27.2.3"
   }
 }
