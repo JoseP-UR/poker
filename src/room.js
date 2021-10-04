@@ -36,9 +36,11 @@ export default class Room {
     }
 
     getVotes() {
-        return this.users.map((user) => {
+        const result = this.users.map((user) => {
             return { user: user.name, vote: user.vote }
         });
+        this.io.emit('room-votes', result);
+        return result;
     }
 
     toggleVotes() {

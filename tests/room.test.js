@@ -96,13 +96,16 @@ describe('Room', () => {
         const room = new Room('test', mockIo);
         const user = new User('test', mockIo, socket);
         user.vote = 'test';
+        const expectedResult = [{user: user.name, vote: user.vote}]
 
         jest.spyOn(room, room.getVotes.name);
         jest.spyOn(room, room.addUser.name);
+        jest.spyOn(room.io, room.io.emit.name);
         room.addUser(user);
 
         expect(room.users).toEqual([user]);
-        expect(room.getVotes()).toEqual([{user: user.name, vote: user.vote}]);
+        expect(room.getVotes()).toEqual(expectedResult);
+        expect(room.io.emit).toHaveBeenCalledWith('room-votes', expectedResult);
     });
 
     test('should have a method to reveal and hide the votes', () => {
