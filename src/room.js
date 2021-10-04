@@ -2,6 +2,7 @@ export default class Room {
     constructor(name, ioObj) {
         this.name = name;
         this.users = [];
+        this.idleUsers = [];
         this.messages = [];
         this.revealed = false;
         this.io = ioObj;
@@ -28,7 +29,7 @@ export default class Room {
     }
 
     getUser(id) {
-        return this.users.find(u => u.id === id);
+        return this.users.find(u => u.id == id);
     }
 
     getMessages() {
@@ -49,5 +50,11 @@ export default class Room {
         if (this.revealed) {
             this.io.emit('room-votes', this.getVotes());
         }
+    }
+
+    idleUser(user) {
+        this.idleUsers.push(user);
+        this.users = this.users.filter(u => u.id !== user.id);
+        this.io.emit('user-disconnect', user);
     }
 }

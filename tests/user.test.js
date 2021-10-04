@@ -76,5 +76,8 @@ describe('User', () => {
             id: user.id
         });
         expect(user.leader).toBe(false);
-    })
+    });
+
+    test.todo('should handle reconnection')
+    test.todo('should listen to events')
 })

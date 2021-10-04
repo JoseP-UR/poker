@@ -6,6 +6,7 @@ import mockIo from "./mocks/mockIo.js";
 
 describe('Room', () => {
     const socket = mockIo;
+    socket.id = '123'
     test('instance should have a name, messages, users and the ioObj', () => {
         const room = new Room('test', mockIo);
 
@@ -137,5 +138,24 @@ describe('Room', () => {
         room.removeUser(user);
         expect(mockIo.emit).toHaveBeenCalledWith('user-leave', user);
         expect(room.users).toEqual([]);
+    });
+
+    test('should idle disconnected users', () => {
+        const room = new Room('test', mockIo);
+        const user = new User('test', mockIo, socket);
+
+        jest.spyOn(room, room.idleUser.name);
+        jest.spyOn(room, room.addUser.name);
+        jest.spyOn(mockIo, mockIo.to.name).mockReturnValue(socket);
+        jest.spyOn(socket, socket.emit.name);
+
+        room.addUser(user);
+        expect(room.addUser).toHaveBeenCalledWith(user);
+        expect(room.users).toEqual([user]);
+        
+        room.idleUser(user);
+        expect(socket.emit).toHaveBeenCalledWith('user-disconnect', user);
+        expect(room.users).toEqual([]);
+        expect(room.idleUsers).toEqual([user]);
     });
 });
